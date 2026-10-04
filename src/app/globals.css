@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0e1412;
+  --bg-elev: #172019;
+  --bg-elev2: #1f2b22;
+  --fg: #e8efe9;
+  --fg-muted: #93a398;
+  --line: #2a3a2f;
+  --accent: #35c26a;
+  --accent-fg: #06250f;
+  --danger: #e5534b;
+  --warn: #e9b949;
+  --info: #4ea3f0;
+  --felt: #1b5e3a;
+  --red-suit: #ff6b6b;
+  --black-suit: #f1f5f2;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-elev2: var(--bg-elev2);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-info: var(--info);
+  --color-felt: var(--felt);
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+body {
+  padding-top: env(safe-area-inset-top);
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* iOS Safari の自動ズームを防ぐ */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
+}
+
+.suit-red {
+  color: var(--red-suit);
+}
+.suit-black {
+  color: var(--black-suit);
+}
+
+@utility tap {
+  min-height: 48px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+@utility btn {
+  min-height: 48px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: 600;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+  &:active {
+    transform: scale(0.98);
+  }
+  &:disabled {
+    opacity: 0.4;
+    transform: none;
+  }
+}
+.btn-primary {
+  @apply btn bg-accent text-accent-fg;
+}
+.btn-secondary {
+  @apply btn bg-elev2 text-fg border border-line;
+}
+.btn-danger {
+  @apply btn bg-danger text-white;
+}
+.btn-ghost {
+  @apply btn bg-transparent text-muted;
+}
+
+.field {
+  @apply w-full rounded-xl border border-line bg-elev2 px-3 py-3 text-fg outline-none focus:border-accent;
+}
+
+.card-face {
+  @apply inline-flex items-center justify-center rounded-md font-bold leading-none;
+  background: #fbfdfb;
+  color: #111;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.card-face.red {
+  color: #d0342c;
+}
+.card-back {
+  @apply inline-flex items-center justify-center rounded-md border border-dashed border-line text-muted;
+}
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hide {
+  scrollbar-width: none;
+}
