@@ -25,16 +25,22 @@ export default function Home() {
       <TopBar
         title="MTT Hand Tracker"
         right={
-          <Link href="/account" className="tap flex items-center px-2 text-sm text-muted">
-            {auth.session ? <Pill tone="accent">同期ON</Pill> : <Pill>ローカル</Pill>}
-          </Link>
+          <div className="flex items-center">
+            <Link href="/help" className="tap flex items-center px-2 text-sm text-muted">使い方</Link>
+            <Link href="/account" className="tap flex items-center px-2 text-sm text-muted">
+              {auth.session ? <Pill tone="accent">同期ON</Pill> : <Pill>ローカル</Pill>}
+            </Link>
+          </div>
         }
       />
       <Page>
         <Link href="/t/new" className="btn-primary mb-5 w-full">＋ 新しいトーナメント</Link>
 
         {!mounted ? null : list.length === 0 ? (
-          <Empty>まだトーナメントがありません。上のボタンから作成してください。</Empty>
+          <Empty>
+            まだトーナメントがありません。上のボタンから作成してください。
+            <Link href="/help" className="mt-3 block font-semibold text-accent">はじめての方は「使い方」へ →</Link>
+          </Empty>
         ) : (
           <ul className="space-y-2">
             {list.map((t) => {

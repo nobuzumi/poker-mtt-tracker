@@ -28,9 +28,9 @@ export function Page({ children, className = '' }: { children: ReactNode; classN
   return <main className={`mx-auto w-full max-w-2xl flex-1 px-4 pb-28 pt-4 ${className}`}>{children}</main>;
 }
 
-export function Section({ title, children, right }: { title?: string; children: ReactNode; right?: ReactNode }) {
+export function Section({ title, children, right, id }: { title?: string; children: ReactNode; right?: ReactNode; id?: string }) {
   return (
-    <section className="mb-5">
+    <section id={id} className="mb-5 scroll-mt-16">
       {(title || right) && (
         <div className="mb-2 flex items-center justify-between">
           {title && <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h2>}

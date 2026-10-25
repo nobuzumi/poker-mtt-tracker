@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { Field, Page, Section, Segmented, TopBar, useToast } from '@/components/ui';
 import { exportBackup, importBackup, updateSettings, useStore } from '@/lib/store';
@@ -141,6 +142,8 @@ export default function AccountPage() {
             <li>一度開いておけば、電波の弱い会場でもオフラインで記録できます(同期は復帰後に自動)。</li>
           </ol>
         </Section>
+
+        <Link href="/help" className="btn-secondary w-full">使い方ガイドを開く</Link>
       </Page>
     </>
   );
