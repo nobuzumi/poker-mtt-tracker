@@ -1,0 +1,39 @@
+name: Supabase keepalive
+
+# Supabase Free プランは「直近1週間の DB 活動が不十分」だとプロジェクトを自動停止する。
+# Vercel Cron(毎日1回)に加えて GitHub Actions からも1日4回 /api/keepalive を叩き、
+# 公式の目安「1日に数回のユーザーリクエスト」を確実に上回るようにする。
+# 失敗すると GitHub からメール通知が来るので、監視も兼ねている。
+# 注意: public リポジトリは60日間コミット等の活動が無いとスケジュール実行が自動で無効化される
+#       (その場合は Actions タブで再有効化するか、何かをコミットする)。
+on:
+  schedule:
+    # UTC。毎時0分は混雑して遅延・スキップされやすいので 17 分にずらしている
+    - cron: '17 0,6,12,18 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      KEEPALIVE_URL: ${{ vars.KEEPALIVE_URL || 'https://poker-mtt-tracker.vercel.app/api/keepalive' }}
+      # Vercel 側で CRON_SECRET を設定した場合は、同じ値を GitHub の Secrets にも登録する
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - name: Call /api/keepalive twice
+        run: |
+          auth=()
+          if [ -n "${CRON_SECRET:-}" ]; then auth=(-H "Authorization: Bearer ${CRON_SECRET}"); fi
+          fail=0
+          for i in 1 2; do
+            out=$(curl -sS --max-time 60 "${auth[@]}" -w '\n%{http_code}' "$KEEPALIVE_URL") || out=$'\n000'
+            code=${out##*$'\n'}
+            body=${out%$'\n'*}
+            echo "call $i: HTTP $code $body"
+            [ "$code" = "200" ] || fail=1
+            sleep 5
+          done
+          exit $fail

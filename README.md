@@ -88,6 +88,22 @@ git push -u origin main
 
 ローカル開発で同期も試す場合は `.env.example` を `.env.local` にコピーして値を入れてください。
 
+### 4. Supabase Free プランの自動停止対策(keepalive)
+
+Supabase Free プランは「直近1週間の DB 活動が不十分」だとプロジェクトを自動で一時停止します(公式の目安は「1日に数回のユーザーリクエスト」)。停止すると同期だけが失敗し(ローカル記録・エクスポートは使える)、ダッシュボードの **Restore project** で復帰できます。
+
+これを防ぐため `/api/keepalive`(`src/app/api/keepalive/route.ts`)が両テーブルに複数クエリを投げ、2系統のスケジューラから呼ばれます:
+
+| 経路 | 設定ファイル | 頻度 | 確認場所 |
+|---|---|---|---|
+| Vercel Cron | `vercel.json` | 毎日 UTC 3:00(±59分) | Vercel → プロジェクト → Settings → Cron Jobs |
+| GitHub Actions | `.github/workflows/keepalive.yml` | 1日4回(UTC 0/6/12/18 時台) | GitHub → リポジトリ → Actions → Supabase keepalive |
+
+- GitHub Actions は失敗するとメールが届くので監視も兼ねます。手動実行は Actions タブの **Run workflow** から。
+- public リポジトリは60日間コミット等が無いとスケジュール実行が自動停止するので、その通知が来たら Actions タブで再有効化してください。
+- Vercel に `CRON_SECRET` を設定する場合は、同じ値を GitHub の **Settings → Secrets and variables → Actions** に `CRON_SECRET` として登録してください(未設定なら不要)。
+- 「Your project is scheduled to be paused」のメールが来たときの応急処置は、ブラウザで `https://poker-mtt-tracker.vercel.app/api/keepalive` を何度か開くか、Supabase ダッシュボードでプロジェクトを開くことです。
+
 ## 既知の制限 / 今後
 
 - ストラドル、デッドブラインド、ミスドブラインドの投稿は未対応(ボタン位置と座席の有効/無効で調整)
