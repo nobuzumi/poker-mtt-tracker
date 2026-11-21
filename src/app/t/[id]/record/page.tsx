@@ -253,19 +253,20 @@ function RecordInner({ id, t }: { id: string; t: Tournament }) {
         {/* アクションログ */}
         {state.actions.length > 0 && (
           <Section title="アクション">
-            <p className="text-xs leading-6 text-muted">
+            {/* 隣接する span の間に空白が無いと行が折り返せず枠からはみ出るので、flex-wrap で1アクションずつ折り返す */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-muted">
               {state.actions.map((a, i) => {
                 const n = posMap[a.seat];
                 const txt = a.type === 'fold' ? 'F' : a.type === 'check' ? 'X' : a.type === 'call' ? `C ${chips(a.amount ?? 0)}` : a.type === 'bet' ? `B ${chips(a.amount ?? 0)}` : `R→${chips(a.toAmount ?? 0)}`;
                 const streetBreak = i > 0 && state.actions[i - 1].street !== a.street;
                 return (
-                  <span key={i}>
-                    {streetBreak && <span className="mx-1 text-fg">|</span>}
-                    <span className="mr-2 whitespace-nowrap"><b className="text-fg">{n}</b> {txt}{a.allIn ? '!' : ''}</span>
+                  <span key={i} className="contents">
+                    {streetBreak && <span className="text-fg">|</span>}
+                    <span className="whitespace-nowrap"><b className="text-fg">{n}</b> {txt}{a.allIn ? '!' : ''}</span>
                   </span>
                 );
               })}
-            </p>
+            </div>
           </Section>
         )}
 

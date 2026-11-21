@@ -178,54 +178,65 @@ function SetupInner({ id, t }: { id: string; t: Tournament }) {
           right={<span className="text-[11px] text-muted">BTN=ボタン ★=あなた</span>}
         >
           <ul className="divide-y divide-line">
+            {/* 1行目: 座席 / BTN / 名前 / ★、2行目: スタック(・賞金)。名前欄を1行にまとめると iPhone 幅では数十px しか残らず入力中の文字が見えないため分ける */}
             {drafts.map((d) => (
-              <li key={d.seat} className={`flex items-center gap-2 py-2 ${d.active ? '' : 'opacity-40'}`}>
-                <button
-                  className={`tap flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${d.active ? 'bg-elev2' : 'bg-transparent border border-dashed border-line'}`}
-                  onClick={() => upd(d.seat, { active: !d.active })}
-                  title="タップで着席/離席"
-                >
-                  {d.seat}
-                </button>
-                <button
-                  className={`tap w-12 shrink-0 rounded-lg text-xs font-bold ${button === d.seat ? 'bg-warn text-black' : 'bg-elev2 text-muted'}`}
-                  disabled={!d.active}
-                  onClick={() => setButton(d.seat)}
-                >
-                  {button === d.seat ? 'BTN' : posMap[d.seat] ?? '-'}
-                </button>
-                <input
-                  className="field min-w-0 flex-1 px-2 py-2"
-                  value={d.name}
-                  disabled={!d.active}
-                  onChange={(e) => upd(d.seat, { name: e.target.value })}
-                  onFocus={(e) => e.target.select()}
-                />
-                <input
-                  className="field w-24 px-2 py-2 text-right tabular-nums"
-                  inputMode="numeric"
-                  value={d.stack}
-                  disabled={!d.active}
-                  onChange={(e) => upd(d.seat, { stack: e.target.value.replace(/[^0-9]/g, '') })}
-                  onFocus={(e) => e.target.select()}
-                />
-                {t.isPko && (
-                  <input
-                    className="field w-16 px-1 py-2 text-right text-xs tabular-nums"
-                    inputMode="decimal"
-                    value={d.bounty}
+              <li key={d.seat} className={`py-2 ${d.active ? '' : 'opacity-40'}`}>
+                <div className="flex items-center gap-2">
+                  <button
+                    className={`tap flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${d.active ? 'bg-elev2' : 'bg-transparent border border-dashed border-line'}`}
+                    onClick={() => upd(d.seat, { active: !d.active })}
+                    title="タップで着席/離席"
+                  >
+                    {d.seat}
+                  </button>
+                  <button
+                    className={`tap w-12 shrink-0 rounded-lg text-xs font-bold ${button === d.seat ? 'bg-warn text-black' : 'bg-elev2 text-muted'}`}
                     disabled={!d.active}
-                    placeholder="賞金"
-                    onChange={(e) => upd(d.seat, { bounty: e.target.value })}
+                    onClick={() => setButton(d.seat)}
+                  >
+                    {button === d.seat ? 'BTN' : posMap[d.seat] ?? '-'}
+                  </button>
+                  <input
+                    className="field min-w-0 flex-1 px-2 py-2"
+                    value={d.name}
+                    disabled={!d.active}
+                    placeholder="名前"
+                    onChange={(e) => upd(d.seat, { name: e.target.value })}
+                    onFocus={(e) => e.target.select()}
                   />
+                  <button
+                    className={`tap w-9 shrink-0 text-xl ${d.isHero ? 'text-warn' : 'text-muted/40'}`}
+                    disabled={!d.active}
+                    onClick={() => setDrafts(drafts.map((x) => ({ ...x, isHero: x.seat === d.seat, name: x.seat === d.seat ? (x.name.startsWith('P') && x.name.length <= 3 ? t.heroName : x.name) : x.name })))}
+                  >
+                    ★
+                  </button>
+                </div>
+                {d.active && (
+                  <div className="mt-1.5 flex items-center gap-2 pl-12">
+                    <label className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <span className="shrink-0 text-[11px] text-muted">スタック</span>
+                      <input
+                        className="field min-w-0 flex-1 px-2 py-1.5 text-right tabular-nums"
+                        inputMode="numeric"
+                        value={d.stack}
+                        onChange={(e) => upd(d.seat, { stack: e.target.value.replace(/[^0-9]/g, '') })}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </label>
+                    {t.isPko && (
+                      <label className="flex w-24 shrink-0 items-center gap-1.5">
+                        <span className="shrink-0 text-[11px] text-muted">賞金</span>
+                        <input
+                          className="field min-w-0 flex-1 px-2 py-1.5 text-right tabular-nums"
+                          inputMode="decimal"
+                          value={d.bounty}
+                          onChange={(e) => upd(d.seat, { bounty: e.target.value })}
+                        />
+                      </label>
+                    )}
+                  </div>
                 )}
-                <button
-                  className={`tap w-9 shrink-0 text-xl ${d.isHero ? 'text-warn' : 'text-muted/40'}`}
-                  disabled={!d.active}
-                  onClick={() => setDrafts(drafts.map((x) => ({ ...x, isHero: x.seat === d.seat, name: x.seat === d.seat ? (x.name.startsWith('P') && x.name.length <= 3 ? t.heroName : x.name) : x.name })))}
-                >
-                  ★
-                </button>
               </li>
             ))}
           </ul>

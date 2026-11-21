@@ -1,4 +1,4 @@
-// PWA用アイコン(PNG)を外部ライブラリなしで生成する: 緑の角丸背景 + 白いスペード
+// PWA用アイコン(PNG)を外部ライブラリなしで生成する: 青の背景 + 白いスペード
 // 実行: node scripts/make-icons.mjs
 import { deflateSync } from 'node:zlib';
 import { writeFileSync, mkdirSync } from 'node:fs';
@@ -72,12 +72,12 @@ function render(size, { rounded, pad }) {
       const cy = Math.min(Math.max(y, r), size - r);
       if ((x - cx) ** 2 + (y - cy) ** 2 > r * r) return [0, 0, 0, 0];
     }
-    // 背景グラデーション(上が明るい緑)
+    // 背景グラデーション(上が明るい青 #3b82f6 → 下が濃い青 #1e3a8a)
     const t = y / size;
-    const bg = [Math.round(27 + (14 - 27) * t), Math.round(110 + (70 - 110) * t), Math.round(66 + (42 - 66) * t)];
+    const bg = [Math.round(59 + (30 - 59) * t), Math.round(130 + (58 - 130) * t), Math.round(246 + (138 - 246) * t)];
     const nx = ((x + 0.5) / size - 0.5) * 2 / pad;
     const ny = ((y + 0.5) / size - 0.5) * 2 / pad - 0.02;
-    if (inSpade(nx, ny)) return [250, 252, 250, 255];
+    if (inSpade(nx, ny)) return [250, 252, 255, 255];
     return [bg[0], bg[1], bg[2], 255];
   });
 }

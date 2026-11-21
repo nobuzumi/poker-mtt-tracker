@@ -3,7 +3,7 @@
  *  - ページ遷移はネットワーク優先、失敗時はキャッシュ済みページ → ルート("/")にフォールバック
  * データ自体は localStorage にあるため、アプリ殻さえ開ければオフラインで記録できる。
  */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `shell-${VERSION}`;
 const ASSET_CACHE = `assets-${VERSION}`;
 
